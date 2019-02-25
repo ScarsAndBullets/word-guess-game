@@ -21,55 +21,110 @@
 
 	<body>
 		<div class="container">
-			<div class="jumbotron">
-				<H1>Military Vehicle Identification</H1>
+			<div class="jumbotron" style="text-align: center;">
+				<H1>Armored Vehicle Identification</H1>
+				<p>Press any key to begin.</p>
 			</div>
 			<div class="row">
+				<!-- Entire Left Column -->
 				<div class="col-lg-6">
-					<div class="col-lg-12">
-						<div class="card mb-2">
-							<h3 class="card-header">Vehicle Name</h3>
-							<div class="card-body text-center">
-								<h1 id="letterSpacesID">_ _ _ _ _</h1>
+					<div class="card mb-2">
+						<h3 class="card-header">
+							Tank Name or Nomenclature
+						</h3>
+						<div class="card-body text-center">
+							<h1 id="letterSpacesID"></h1>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="card mb-2">
+								<h3 class="card-header">
+									Incorrect Guesses
+								</h3>
+								<div class="card-body text-center">
+									<h1 id="WrongGuessesID"></h1>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="card mb-2">
+								<h3 class="card-header">
+									Guesses Remaining
+								</h3>
+								<div class="card-body text-center">
+									<h1 id="guessesLeftID"></h1>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-6">Image</div>
+				<!-- Entire Right Column -->
+				<div class="col-lg-6">
+					<img
+						src="assets/images/tanks.jpg"
+						class="img-fluid"
+						alt="Responsive image"
+						id="tankImg"
+					/>
+				</div>
 			</div>
 		</div>
 
 		<!-- Optional JavaScript -->
 		<script type="text/javascript" src="assets/javascript/game.js"></script>
 		<script>
-			var weaponArray = [
-				"apache",
-				"lakota",
-				"blackhawk",
+			var tankArray = [
 				"abrams",
-				"javelin",
-				"bradley",
-				"warthog",
-				"raptor"
+				"armata",
+				"challenger",
+				"leclerc",
+				"leopard",
+				"merkava",
+				"patton",
+				"sheridan",
+				"sherman",
+				"t34",
+				"t72",
+				"tiger"
 			];
 
-			var computerPick;
-			var letterSpacesVar = document.getElementById("letterSpacesID");
+			var imageArray;
 
-			function computerPicker() {
-				var rando = Math.floor(Math.random() * weaponArray.length);
-				return weaponArray[rando];
+			var pickedName;
+			var letterSpacesVar = "";
+			var guessesLeft = 9;
+
+			// Picks random weapon name from weapon array
+			function namePicker() {
+				var rando = Math.floor(Math.random() * tankArray.length);
+				return tankArray[rando];
 			}
 
+			// Creates enough spaces (underlines) for chosen weapon name, and displays it in the H1 header.
 			function letterSpacesGen(input) {
 				for (var i = 0; i < input.length; i++) {
-					letterSpacesVar;
+					//console.log(input);
+					//console.log(input.length);
+					letterSpacesVar += "_ ";
+					//console.log(letterSpacesVar);
 				}
+				document.getElementById(
+					"letterSpacesID"
+				).innerHTML = letterSpacesVar;
+				// console.log(letterSpacesVar);
+			}
+
+			function displayTank(input) {
+				document.getElementById("tankImg").src =
+					"assets/images/" + input + ".jpg";
+				console.log("assets/images/" + input + ".jpg");
 			}
 
 			document.onkeyup = function() {
-				var computerPick = computerPicker();
-				letterSpacesGen(computerPick);
+				pickedName = namePicker();
+				letterSpacesVAr = letterSpacesGen(pickedName);
+				displayTank(pickedName);
 			};
 		</script>
 
