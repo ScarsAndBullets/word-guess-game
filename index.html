@@ -93,9 +93,11 @@
 			var gameInProgress = false;
 			var pickedTank;
 			var letterSpacesVar = "";
-			var letterSpacesArr = "";
+			var letterSpacesArr = [];
 			var guessesLeft = 10;
-			var tankNameArr = "";
+			var tankNameArr = [];
+			var kp = "";
+			var userGuess = [];
 
 			// Picks random tank name from tank array
 			function tankPicker() {
@@ -108,7 +110,7 @@
 				for (var i = 0; i < input.length; i++) {
 					letterSpacesVar += "_";
 				}
-				//letterSpacesArr = Array.from(letterSpacesVar);
+				letterSpacesArr = Array.from(letterSpacesVar);
 				//console.log("letterSpacesArr = " + letterSpacesArr);
 				document.getElementById(
 					"letterSpacesID"
@@ -123,7 +125,9 @@
 
 			document.onkeyup = function() {
 				if (gameInProgress) {
+					kp = event.key;
 					//capture keypress character and store in variable - var kp
+					letterSpacesGen();
 					//indexof method to see if kp is in array tankNameArr
 					//if kp is in array tankNameArr, update tank
 				} else {
