@@ -33,7 +33,7 @@
 							Tank Name or Nomenclature
 						</h3>
 						<div class="card-body text-center">
-							<h1 id="letterSpacesID"></h1>
+							<h1 id="spacesID"></h1>
 						</div>
 					</div>
 					<div class="row">
@@ -43,7 +43,7 @@
 									Incorrect Guesses
 								</h3>
 								<div class="card-body text-center">
-									<h1 id="WrongGuessesID"></h1>
+									<h1 id="wrongGuessesID"></h1>
 								</div>
 							</div>
 						</div>
@@ -91,13 +91,25 @@
 
 			// Declare initial variables
 			var gameInProgress = false;
-			var pickedTank;
-			var letterSpacesVar = "";
-			var letterSpacesArr = [];
+			var pickedTank = "";
+			var spacesVar = "";
+			var spacesArr = [];
 			var guessesLeft = 10;
 			var tankNameArr = [];
-			var kp = "";
-			var userGuess = [];
+			var userGuess = "";
+			var userGuessArr = [];
+			var wrongGuesses = [];
+
+			// Initialize vars
+			function initializer() {
+				pickedTank = "";
+				spacesVar = "";
+				spacesArr = [];
+				guessesLeft = 10;
+				tankNameArr = [];
+				userGuess = "";
+				userGuessArr = [];
+			}
 
 			// Picks random tank name from tank array
 			function tankPicker() {
@@ -105,43 +117,74 @@
 				return tankArray[rando];
 			}
 
-			// Creates enough spaces (underlines) for chosen tank name, and displays it in the H1 header.
-			function letterSpacesGen(input) {
-				for (var i = 0; i < input.length; i++) {
-					letterSpacesVar += "_";
-				}
-				letterSpacesArr = Array.from(letterSpacesVar);
-				//console.log("letterSpacesArr = " + letterSpacesArr);
-				document.getElementById(
-					"letterSpacesID"
-				).innerHTML = letterSpacesVar;
-			}
-
-			function displayTank(input) {
+			// Display tank image matching pickedTank/tankName
+			function displayTank(tankName) {
 				document.getElementById("tankImg").src =
-					"assets/images/" + input + ".jpg";
-				console.log("assets/images/" + input + ".jpg");
+					"assets/images/" + tankName + ".jpg";
+				console.log("assets/images/" + tankName + ".jpg");
 			}
 
-			document.onkeyup = function() {
+			// Runs the user interface
+			function theMachine() {
 				if (gameInProgress) {
-					kp = event.key;
-					//capture keypress character and store in variable - var kp
-					letterSpacesGen();
-					//indexof method to see if kp is in array tankNameArr
-					//if kp is in array tankNameArr, update tank
+					if (!userGuessArr.includes(userGuess)) {
+						//push userGuess to guessed array
+						userGuessArr.push(userGuess);
+						console.log(
+							`User Guess ${userGuess}, User Guess Array ${userGuessArr}`
+						);
+						var successCheck = spacesArr;
+						spacesArr = 0;
+						for (i = 0; i < tankNameArr; i++) {
+							if (userGuessArr.includes(tankNameArr[i])) {
+								spacesArr.push(tankNameArr[i]);
+							} else {
+								spacesArr.push("_");
+							}
+						}
+						if (spacesArr === successCheck) {
+							guessesLeft--;
+							wrongGuesses.push(userGuess);
+						}
+						spacesVar = spacesArr.toString();
+						document.getElementById(
+							"spacesID"
+						).innerHTML = spacesVar;
+						document.getElementById(
+							"wrongGuessesID"
+						).innerHTML = wrongGuesses.toString();
+						document.getElementById(
+							"guessesLeftID"
+						).innerHTML = guessesLeft;
+					} else {
+						return false;
+					}
 				} else {
-					pickedTank = tankPicker();
-					letterSpacesVAr = letterSpacesGen(pickedTank);
-					displayTank(pickedTank);
-					//put pickedTank into an array - tankNameArr[]
+					//Initialize game - doesn't store key press
 					tankNameArr = Array.from(pickedTank);
 					console.log("tankNameArr =" + tankNameArr);
-					//reset global variables by function
+					for (var i = 0; i < pickedTank.length; i++) {
+						spacesArr += "_";
+					}
+
+					spacesVar = spacesArr.toString("");
+
+					document.getElementById("spacesID").innerHTML = spacesVar;
 					document.getElementById(
 						"guessesLeftID"
 					).innerHTML = guessesLeft;
+				}
+			}
 
+			document.onkeypress = function() {
+				if (gameInProgress) {
+					userGuess = event.key;
+					theMachine();
+				} else {
+					initializer();
+					pickedTank = tankPicker();
+					displayTank(pickedTank);
+					theMachine();
 					gameInProgress = true;
 				}
 			};
