@@ -58,6 +58,28 @@
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="card mb-2">
+								<h3 class="card-header">
+									Games Won
+								</h3>
+								<div class="card-body text-center">
+									<h1 id="gamesWon"></h1>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="card mb-2">
+								<h3 class="card-header">
+									Games Lost
+								</h3>
+								<div class="card-body text-center">
+									<h1 id="gamesLost"></h1>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<!-- Entire Right Column -->
 				<div class="col-lg-6">
@@ -73,138 +95,7 @@
 
 		<!-- Optional JavaScript -->
 		<script type="text/javascript" src="assets/javascript/game.js"></script>
-		<script>
-			// Tank names, used to generate images as well
-			var tankArray = [
-				"abrams",
-				"armata",
-				"challenger",
-				"leclerc",
-				"leopard",
-				"merkava",
-				"patton",
-				"sheridan",
-				"sherman",
-				"t34",
-				"t72",
-				"tiger"
-			];
 
-			// Declare initial variables
-			var gameInProgress = false;
-			var pickedTank = "tanks";
-			var guessesLeft = 10;
-			var tankNameArr = [];
-			var userGuess = "";
-			var userGuessArr = [];
-			var wrongGuesses = [];
-			var gameIsWon = false;
-			var gamesWon = 0;
-			var instructions = "Press any key to start.";
-
-			function display() {
-				// Hook JS into HTML by ID
-				document.getElementById("tankImg").src =
-					"assets/images/" + pickedTank + ".jpg";
-				document.getElementById("instruct").innerHTML = instructions;
-				document.getElementById(
-					"wrongGuessesID"
-				).innerHTML = wrongGuesses.toString();
-				document.getElementById(
-					"guessesLeftID"
-				).innerHTML = guessesLeft;
-			}
-
-			// Initialize vars
-			function initializer() {
-				pickedTank = "tanks";
-				guessesLeft = 10;
-				tankNameArr = [];
-				userGuess = "";
-				userGuessArr = [];
-				wrongGuesses = [];
-				instructions = "Press any letter or number to make a guess.";
-			}
-
-			// Picks random tank name from tank array
-			function tankPicker() {
-				var rando = Math.floor(Math.random() * tankArray.length);
-				return tankArray[rando];
-			}
-
-			// Setup game - doesn't store key press
-			function gameSetup() {
-				tankNameArr = Array.from(pickedTank);
-				console.log("tankNameArr =" + tankNameArr);
-				fillInSpaces();
-				gameInProgress = true;
-			}
-
-			function checkGuessUnique() {
-				if (userGuessArr.includes(userGuess)) {
-					return false;
-				} else {
-					userGuessArr.push(userGuess);
-					checkGuessInTank();
-				}
-			}
-
-			function checkGuessInTank() {
-				if (tankNameArr.includes(userGuess)) {
-					fillInSpaces();
-				} else {
-					guessesLeft--;
-					wrongGuesses.push(userGuess);
-				}
-			}
-
-			function fillInSpaces() {
-				var spacesArr = [];
-				for (var i = 0; i < tankNameArr.length; i++) {
-					if (userGuessArr.includes(tankNameArr[i])) {
-						spacesArr.push(tankNameArr[i]);
-					} else {
-						spacesArr.push("_");
-					}
-				}
-				var spacesStr = "";
-				spacesStr = spacesArr.join("");
-				document.getElementById("spacesID").innerHTML = spacesStr;
-				console.log(
-					"spacesStr: " +
-						spacesStr +
-						", spacesArr: " +
-						spacesArr +
-						", tankNameArr: " +
-						tankNameArr
-				);
-				if (spacesStr === pickedTank) {
-					gameWon();
-				}
-			}
-
-			function gameWon() {
-				gameIsWon = true;
-				gamesWon++;
-				gameInProgress = false;
-				instructions = "You won!";
-			}
-
-			document.onkeypress = function() {
-				if (gameInProgress) {
-					userGuess = event.key;
-					checkGuessUnique();
-					display();
-				} else {
-					initializer();
-					display();
-					pickedTank = tankPicker();
-					display();
-					gameSetup();
-					display();
-				}
-			};
-		</script>
 		<!-- 
 		Pseudo Code
 		
