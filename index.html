@@ -167,7 +167,8 @@
 						spacesArr.push("_");
 					}
 				}
-				var spacesStr = spacesArr.toString("");
+				var spacesStr = "";
+				spacesStr = spacesArr.join("");
 				document.getElementById("spacesID").innerHTML = spacesStr;
 				console.log(
 					"spacesStr: " +
@@ -177,7 +178,7 @@
 						", tankNameArr: " +
 						tankNameArr
 				);
-				if (spacesArr === tankNameArr) {
+				if (spacesStr === pickedTank) {
 					gameWon();
 				}
 			}
