@@ -23,7 +23,7 @@
 		<div class="container">
 			<div class="jumbotron" style="text-align: center;">
 				<H1>Armored Vehicle Identification</H1>
-				<p>Press any key to begin.</p>
+				<p id="instruct">Press any key to begin.</p>
 			</div>
 			<div class="row">
 				<!-- Entire Left Column -->
@@ -74,6 +74,7 @@
 		<!-- Optional JavaScript -->
 		<script type="text/javascript" src="assets/javascript/game.js"></script>
 		<script>
+			// Tank names, used to generate images as well
 			var tankArray = [
 				"abrams",
 				"armata",
@@ -91,24 +92,38 @@
 
 			// Declare initial variables
 			var gameInProgress = false;
-			var pickedTank = "";
-			var spacesVar = "";
-			var spacesArr = [];
+			var pickedTank = "tanks";
 			var guessesLeft = 10;
 			var tankNameArr = [];
 			var userGuess = "";
 			var userGuessArr = [];
 			var wrongGuesses = [];
+			var gameIsWon = false;
+			var gamesWon = 0;
+			var instructions = "Press any key to start.";
+
+			function display() {
+				// Hook JS into HTML by ID
+				document.getElementById("tankImg").src =
+					"assets/images/" + pickedTank + ".jpg";
+				document.getElementById("instruct").innerHTML = instructions;
+				document.getElementById(
+					"wrongGuessesID"
+				).innerHTML = wrongGuesses.toString();
+				document.getElementById(
+					"guessesLeftID"
+				).innerHTML = guessesLeft;
+			}
 
 			// Initialize vars
 			function initializer() {
-				pickedTank = "";
-				spacesVar = "";
-				spacesArr = [];
+				pickedTank = "tanks";
 				guessesLeft = 10;
 				tankNameArr = [];
 				userGuess = "";
 				userGuessArr = [];
+				wrongGuesses = [];
+				instructions = "Press any letter or number to make a guess.";
 			}
 
 			// Picks random tank name from tank array
@@ -117,95 +132,88 @@
 				return tankArray[rando];
 			}
 
-			// Display tank image matching pickedTank/tankName
-			function displayTank(tankName) {
-				document.getElementById("tankImg").src =
-					"assets/images/" + tankName + ".jpg";
-				console.log("assets/images/" + tankName + ".jpg");
+			// Setup game - doesn't store key press
+			function gameSetup() {
+				tankNameArr = Array.from(pickedTank);
+				console.log("tankNameArr =" + tankNameArr);
+				fillInSpaces();
+				gameInProgress = true;
 			}
 
-			// Runs the user interface
-			function theMachine() {
-				if (gameInProgress) {
-					if (!userGuessArr.includes(userGuess)) {
-						//push userGuess to guessed array
-						userGuessArr.push(userGuess);
-						console.log(
-							`User Guess ${userGuess}, User Guess Array ${userGuessArr}`
-						);
-						var successCheck = spacesArr;
-						spacesArr = 0;
-						for (i = 0; i < tankNameArr; i++) {
-							if (userGuessArr.includes(tankNameArr[i])) {
-								spacesArr.push(tankNameArr[i]);
-							} else {
-								spacesArr.push("_");
-							}
-						}
-						if (spacesArr === successCheck) {
-							guessesLeft--;
-							wrongGuesses.push(userGuess);
-						}
-						spacesVar = spacesArr.toString();
-						document.getElementById(
-							"spacesID"
-						).innerHTML = spacesVar;
-						document.getElementById(
-							"wrongGuessesID"
-						).innerHTML = wrongGuesses.toString();
-						document.getElementById(
-							"guessesLeftID"
-						).innerHTML = guessesLeft;
-					} else {
-						return false;
-					}
+			function checkGuessUnique() {
+				if (userGuessArr.includes(userGuess)) {
+					return false;
 				} else {
-					//Initialize game - doesn't store key press
-					tankNameArr = Array.from(pickedTank);
-					console.log("tankNameArr =" + tankNameArr);
-					for (var i = 0; i < pickedTank.length; i++) {
-						spacesArr += "_";
-					}
-
-					spacesVar = spacesArr.toString("");
-
-					document.getElementById("spacesID").innerHTML = spacesVar;
-					document.getElementById(
-						"guessesLeftID"
-					).innerHTML = guessesLeft;
+					userGuessArr.push(userGuess);
+					checkGuessInTank();
 				}
+			}
+
+			function checkGuessInTank() {
+				if (tankNameArr.includes(userGuess)) {
+					fillInSpaces();
+				} else {
+					guessesLeft--;
+					wrongGuesses.push(userGuess);
+				}
+			}
+
+			function fillInSpaces() {
+				var spacesArr = [];
+				for (var i = 0; i < tankNameArr.length; i++) {
+					if (userGuessArr.includes(tankNameArr[i])) {
+						spacesArr.push(tankNameArr[i]);
+					} else {
+						spacesArr.push("_");
+					}
+				}
+				var spacesStr = spacesArr.toString("");
+				document.getElementById("spacesID").innerHTML = spacesStr;
+				console.log(
+					"spacesStr: " +
+						spacesStr +
+						", spacesArr: " +
+						spacesArr +
+						", tankNameArr: " +
+						tankNameArr
+				);
+				if (spacesArr === tankNameArr) {
+					gameWon();
+				}
+			}
+
+			function gameWon() {
+				gameIsWon = true;
+				gamesWon++;
+				gameInProgress = false;
+				instructions = "You won!";
 			}
 
 			document.onkeypress = function() {
 				if (gameInProgress) {
 					userGuess = event.key;
-					theMachine();
+					checkGuessUnique();
+					display();
 				} else {
 					initializer();
+					display();
 					pickedTank = tankPicker();
-					displayTank(pickedTank);
-					theMachine();
-					gameInProgress = true;
+					display();
+					gameSetup();
+					display();
 				}
 			};
 		</script>
-
-		<!-- comments -->
-
 		<!-- 
-	User presses key to make game start
-	
-	Computer chooses a word for user to guess
-	
-	Display underline spaces between quotes corresponding to the number of letters in the chosen word
-	
-	User enters a letter 
-	
-	compare user letter to word letters
-	
-	if user letter matches word letter, replace corresponding underline space with user letter
-
-	else, display letter below in incorrect guess area, decrement remaining guesses by one
-	-->
+		Pseudo Code
+		
+		1.	User presses key to make game start	
+		2.  Computer chooses a word for user to guess
+		3.  Display underline spaces between quotes corresponding to the number of letters in the chosen word.
+		4. 	User enters a letter 
+		5. 	compare user letter to word letters
+		6. 	if user letter matches word letter, replace corresponding underline space with user letter
+		7.  else, display letter below in incorrect guess area, decrement remaining guesses by one
+		-->
 	</body>
 </html>
